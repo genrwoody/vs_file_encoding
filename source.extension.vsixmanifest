@@ -3,8 +3,7 @@
     <Metadata>
         <Identity Id="FileEncoding.ff8fe5f7-e5dc-4213-a1d1-91ec8d84a049" Version="1.0.1" Language="en-US" Publisher="Woody" />
         <DisplayName>FileEncoding</DisplayName>
-        <Description xml:space="preserve">在编辑器底部显示文件编码, 点击按钮可以修改编码.
-Show file encode at editer bottom, click button change encode.SHch</Description>
+        <Description xml:space="preserve">Show file encode at editer bottom, click button change encode.</Description>
         <License>LICENSE.txt</License>
         <Icon>Icon.png</Icon>
         <PreviewImage>Preview.png</PreviewImage>
