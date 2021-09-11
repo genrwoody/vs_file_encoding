@@ -1,26 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-	<Metadata>
-		<Identity Id="FileEncoding.ff8fe5f7-e5dc-4213-a1d1-91ec8d84a049" Version="1.0" Language="en-US" Publisher="genrwoody" />
-		<DisplayName>FileEncoding</DisplayName>
-		<Description xml:space="preserve">在编辑器底部显示文件编码, 点击按钮可以修改编码.
+    <Metadata>
+        <Identity Id="FileEncoding.ff8fe5f7-e5dc-4213-a1d1-91ec8d84a049" Version="1.0.1" Language="en-US" Publisher="Woody" />
+        <DisplayName>FileEncoding</DisplayName>
+        <Description xml:space="preserve">在编辑器底部显示文件编码, 点击按钮可以修改编码.
 Show file encode at editer bottom, click button change encode.SHch</Description>
-		<License>LICENSE.txt</License>
-		<Icon>Icon.png</Icon>
-		<PreviewImage>Preview.png</PreviewImage>
-		<Tags>encoding</Tags>
-	</Metadata>
-	<Installation>
-		<InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />
-	</Installation>
-	<Dependencies>
-		<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-	</Dependencies>
-	<Prerequisites>
-		<Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0,17.0)" DisplayName="Visual Studio core editor" />
-	</Prerequisites>
-	<Assets>
-		<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-	</Assets>
+        <License>LICENSE.txt</License>
+        <Icon>Icon.png</Icon>
+        <PreviewImage>Preview.png</PreviewImage>
+        <Tags>encoding</Tags>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    </Dependencies>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0,17.0)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+    </Assets>
 </PackageManifest>
