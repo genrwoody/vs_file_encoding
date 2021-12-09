@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="FileEncoding.ff8fe5f7-e5dc-4213-a1d1-91ec8d84a049" Version="1.0.1" Language="en-US" Publisher="Woody" />
+        <Identity Id="FileEncoding.ff8fe5f7-e5dc-4213-a1d1-91ec8d84a049" Version="1.0.3" Language="en-US" Publisher="Woody" />
         <DisplayName>FileEncoding</DisplayName>
         <Description xml:space="preserve">Show file encode at editer bottom, click button change encode.</Description>
+        <MoreInfo>https://marketplace.visualstudio.com/items?itemName=genrwoody.FileEncoding</MoreInfo>
         <License>LICENSE.txt</License>
         <Icon>Icon.png</Icon>
         <PreviewImage>Preview.png</PreviewImage>

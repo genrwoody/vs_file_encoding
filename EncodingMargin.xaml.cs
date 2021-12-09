@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -28,11 +28,6 @@ namespace FileEncoding
         /// The document of textview.
         /// </summary>
         private readonly ITextDocument document = null;
-
-        /// <summary>
-        /// The document of textview.
-        /// </summary>
-        private readonly IWpfTextViewMargin container = null;
 
         private static bool HasBom(Encoding encoding)
         {
@@ -101,7 +96,9 @@ namespace FileEncoding
             ClipToBounds = true;
 
             // Text
-            _ = textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document);
+            if (!textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document)) {
+                textView.TextDataModel.DocumentBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document);
+            }
             Content = GetDocumentEncoding(document);
             // Menu
             ContextMenu = new ContextMenu();
