@@ -3,9 +3,9 @@
 中文 | [English](./README.md)
 
 ## 介绍
-一个 Visual Studio 扩展, 在VS的文本编辑器右下角显示文档的编码, 点击按钮可修改编码.
+本 Visual Studio 扩展（vsix）在Visual Studio的编辑器边栏的右下角显示文档的编码, 点击后可修改为您指定的编码。
 
-建议使用.editorconfig设置编码.
+- **保持切换前文件的状态**：若切换到另一编码前，文件状态是未保存状态，则切换后也是未保存状态；若切换前文件不是修改状态，则切换后自动保存。
 
 ## Screenshots
 
