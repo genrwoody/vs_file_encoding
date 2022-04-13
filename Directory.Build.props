@@ -1,0 +1,23 @@
+<Project>
+  <PropertyGroup>
+    <RepositoryUrl>https://github.com/Myvas/FileEncoding</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <LangVersion>latest</LangVersion>
+    <Product>FileEncoding</Product>
+    <Copyright>Copyright (c) $([System.DateTime]::Now.Year)</Copyright>
+  </PropertyGroup>
+
+  <!-- nuget package -->
+  <PropertyGroup>
+    <PackageProjectUrl>https://github.com/Myvas/FileEncoding</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Authors>Woody; Myvas</Authors>
+    <MaintainerEmail>4848285@qq.com</MaintainerEmail>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  
+</Project>

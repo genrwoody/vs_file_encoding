@@ -24,14 +24,13 @@ namespace FileEncoding
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(PackageGuidString)]
+    [Guid(FileEncodingPackage.PackageGuidString)]
     public sealed class FileEncodingPackage : AsyncPackage
     {
         /// <summary>
-        /// FileEncodingPackage GUID string.
+        /// Myvas.Vsix.FileEncodingPackage GUID string.
         /// </summary>
         public const string PackageGuidString = "e4242fd4-6c82-4213-83bd-592a5903ad35";
-
 
         #region Package Members
 

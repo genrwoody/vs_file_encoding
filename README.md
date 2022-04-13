@@ -1,9 +1,9 @@
-# vs_file_encoding
+﻿# FileEncoding
 
-中文 | [English](./README.en-US.md)
+[中文](./README.zh.md) | English
 
-#### 介绍
-一个 Visual Studio 扩展, 在VS的文本编辑器右下角显示文档的编码, 点击按钮可修改编码.
+## Introduction
+It's a Visual Studio Extension, show text file encoding at editor right bottom corner, click button to convert encoding.
 
-建议使用.editorconfig设置编码.
+Recommend set charset with .editorconfig.
 

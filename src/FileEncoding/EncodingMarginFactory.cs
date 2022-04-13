@@ -9,8 +9,8 @@ namespace FileEncoding
     /// </summary>
     [Export(typeof(IWpfTextViewMarginProvider))]
     [Name(EncodingMargin.MarginName)]
-    [Order(After = PredefinedMarginNames.BottomRightCorner)]    // Ensure that the margin occurs below the horizontal scrollbar
-    [MarginContainer(PredefinedMarginNames.BottomRightCorner)]  // Set the container to the bottom of the editor window
+    [Order(After = PredefinedMarginNames.BottomRightCorner)]  // Ensure that the margin occurs below the horizontal scrollbar
+    [MarginContainer(PredefinedMarginNames.BottomRightCorner)]             // Set the container to the bottom of the editor window
     [ContentType("text")]                                       // Show this margin for all text-based types
     [TextViewRole(PredefinedTextViewRoles.Interactive)]
     internal sealed class EncodingMarginFactory : IWpfTextViewMarginProvider
@@ -27,11 +27,14 @@ namespace FileEncoding
         /// </returns>
         public IWpfTextViewMargin CreateMargin(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin marginContainer)
         {
+            //return new EncodingMargin(wpfTextViewHost.TextView);
             ITextViewRoleSet roles = wpfTextViewHost.TextView.Roles;
-            return roles.Contains("DOCUMENT")
-                || roles.Contains("EMBEDDED_PEEK_TEXT_VIEW")
-                ? new EncodingMargin(wpfTextViewHost.TextView, marginContainer)
-                : null;
+            if (roles.Contains("DOCUMENT")
+                || roles.Contains("EMBEDDED_PEEK_TEXT_VIEW"))
+            {
+                return new EncodingMargin(wpfTextViewHost.TextView, marginContainer);
+            }
+            return null;
         }
 
         #endregion

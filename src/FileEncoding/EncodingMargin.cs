@@ -1,23 +1,25 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text;
 using System.Windows.Input;
-using System.Text;
+using System.Windows.Media;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace FileEncoding
 {
     /// <summary>
     /// Margin's canvas and visual definition including both size and content
     /// </summary>
-    public partial class EncodingMargin : Button, IWpfTextViewMargin
+    internal class EncodingMargin : Button, IWpfTextViewMargin
     {
         /// <summary>
         /// Margin name.
         /// </summary>
-        public const string MarginName = "FileEncodeMargin";
+        public const string MarginName = "EncodingMargin";
 
         /// <summary>
         /// A value indicating whether the object is disposed.
@@ -28,31 +30,6 @@ namespace FileEncoding
         /// The document of textview.
         /// </summary>
         private readonly ITextDocument document = null;
-
-        private static bool HasBom(Encoding encoding)
-        {
-            return encoding.GetPreamble().Length != 0;
-        }
-
-        /// <summary>
-        /// Rewrite some encoding name.
-        /// </summary>
-        /// <param name="document">The document to get encoding.</param>
-        /// <returns>Encoding name</returns>
-        private static string GetDocumentEncoding(ITextDocument document)
-        {
-            int codepage = document.Encoding.CodePage;
-            if (codepage == Encoding.UTF8.CodePage) {
-                return HasBom(document.Encoding) ? "UTF-8 (BOM)" : "UTF-8";
-            } else if (codepage == Encoding.Unicode.CodePage) {
-                return "Unicode";
-            } else if (codepage == Encoding.BigEndianUnicode.CodePage) {
-                // default name is too long
-                return "Unicode BE";
-            } else {
-                return document.Encoding.EncodingName;
-            }
-        }
 
         internal class ConvertCommand : ICommand
         {
@@ -75,12 +52,24 @@ namespace FileEncoding
 
             public void Execute(object parameter)
             {
-                EncodingMargin _this = parameter as EncodingMargin;
-                if (_this.document.Encoding.CodePage != encoding.CodePage ||
-                    (HasBom(_this.document.Encoding) != HasBom(encoding))) {
-                    _this.document.Encoding = encoding;
-                    _this.document.UpdateDirtyState(true, DateTime.Now);
-                    _this.Content = GetDocumentEncoding(_this.document);
+                var margin = parameter as EncodingMargin;
+                if (margin == null) return;
+
+                if (margin.document.Encoding.CodePage != encoding.CodePage
+                    || margin.document.Encoding.HasBom() != encoding.HasBom())
+                {
+                    var isDirty = margin.document.IsDirty;
+
+                    margin.document.Encoding = encoding;
+                    margin.document.UpdateDirtyState(true, DateTime.UtcNow);
+                    if (!isDirty)
+                    {
+                        margin.document.SaveAs(margin.document.FilePath, true);
+                        margin.document.UpdateDirtyState(false, DateTime.UtcNow);
+                    }
+
+                    margin.Content = margin.document.Encoding.ShortName();
+                    margin.ToolTip = margin.document.Encoding.DisplayName();
                 }
             }
         }
@@ -91,47 +80,51 @@ namespace FileEncoding
         /// <param name="textView">The textView to attach the margin to.</param>
         public EncodingMargin(IWpfTextView textView, IWpfTextViewMargin marginContainer)
         {
-            InitializeComponent();
-            // display
-            ClipToBounds = true;
+            this.BorderThickness = new Thickness(0);
+            this.ClipToBounds = true;
+            this.Background = new SolidColorBrush(Colors.Transparent);
 
             // Text
-            if (!textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document)) {
+            if (!textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document))
+            {
                 textView.TextDataModel.DocumentBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document);
             }
-            Content = GetDocumentEncoding(document);
+            Content = document.Encoding.ShortName();
+            ToolTip = document.Encoding.DisplayName();
+
             // Menu
             ContextMenu = new ContextMenu();
-            (Encoding encoding, string name)[] encodings = {
-                ( Encoding.Unicode, "Unicode" ),
-                ( Encoding.BigEndianUnicode, "Unicode BE" ),
-                ( Encoding.UTF8, "UTF-8 (BOM)" ),
-                ( new UTF8Encoding(false), "UTF-8" ),
-                ( Encoding.Default, Encoding.Default.EncodingName )
-            };
-            foreach ((Encoding encoding, string name) in encodings) {
-                string text = "Convert to " + name;
+            var contextMenuItems = new[] { Encoding.Default, new UTF8Encoding(false, true), new UTF8Encoding(true, true) };
+            foreach (var item in contextMenuItems)
+            {
+                var text = "Convert to " + item.DisplayName();
                 _ = ContextMenu.Items.Add(new MenuItem
                 {
                     Header = text,
-                    Command = new ConvertCommand(encoding),
+                    Command = new ConvertCommand(item),
                     CommandParameter = this
                 });
             }
             ContextMenu.PlacementTarget = this;
             ContextMenu.Placement = PlacementMode.Top;
+
             Click += (sender, e) =>
             {
-                for (int i = 0; i < ContextMenu.Items.Count; ++i) {
-                    MenuItem item = ContextMenu.Items[i] as MenuItem;
-                    item.IsChecked = Content.Equals(encodings[i].name);
+                for (var i = 0; i < ContextMenu.Items.Count; ++i)
+                {
+                    var item = ContextMenu.Items[i] as MenuItem;
+                    item.IsChecked = Content.Equals(contextMenuItems[i].ShortName());
                 }
                 ContextMenu.IsOpen = true;
             };
-            document.FileActionOccurred += (sender, e) => Content = GetDocumentEncoding(document);
+
+            document.FileActionOccurred += (sender, e) =>
+            {
+                Content = document.Encoding.ShortName();
+                ToolTip = document.Encoding.DisplayName();
+            };
         }
 
-        #region AutoGenerate
         #region IWpfTextViewMargin
 
         /// <summary>
@@ -144,7 +137,7 @@ namespace FileEncoding
             // the margin.
             get
             {
-                ThrowIfDisposed();
+                this.ThrowIfDisposed();
                 return this;
             }
         }
@@ -167,11 +160,11 @@ namespace FileEncoding
         {
             get
             {
-                ThrowIfDisposed();
+                this.ThrowIfDisposed();
 
                 // Since this is a horizontal margin, its width will be bound to the width of the text view.
                 // Therefore, its size is its height.
-                return ActualHeight;
+                return this.ActualHeight;
             }
         }
 
@@ -183,7 +176,7 @@ namespace FileEncoding
         {
             get
             {
-                ThrowIfDisposed();
+                this.ThrowIfDisposed();
 
                 // The margin should always be enabled
                 return true;
@@ -202,17 +195,18 @@ namespace FileEncoding
         /// <exception cref="ArgumentNullException"><paramref name="marginName"/> is null.</exception>
         public ITextViewMargin GetTextViewMargin(string marginName)
         {
-            return string.Equals(marginName, MarginName, StringComparison.OrdinalIgnoreCase) ? this : null;
+            return string.Equals(marginName, EncodingMargin.MarginName, StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         /// <summary>
-        /// Disposes an instance of <see cref="FileEncodeMargin"/> class.
+        /// Disposes an instance of <see cref="EncodingMargin"/> class.
         /// </summary>
         public void Dispose()
         {
-            if (!isDisposed) {
+            if (!this.isDisposed)
+            {
                 GC.SuppressFinalize(this);
-                isDisposed = true;
+                this.isDisposed = true;
             }
         }
 
@@ -223,11 +217,10 @@ namespace FileEncoding
         /// </summary>
         private void ThrowIfDisposed()
         {
-            if (isDisposed) {
+            if (this.isDisposed)
+            {
                 throw new ObjectDisposedException(MarginName);
             }
         }
-        #endregion
     }
 }
-
