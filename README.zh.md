@@ -7,3 +7,9 @@
 
 建议使用.editorconfig设置编码.
 
+## Screenshots
+
+![Preview](docs/screenshots/Preview.png?raw=true "Preview")
+
+## License
+[MIT](LICENSE.txt)

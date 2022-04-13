@@ -7,3 +7,9 @@ It's a Visual Studio Extension, show text file encoding at editor right bottom c
 
 Recommend set charset with .editorconfig.
 
+## Screenshots
+
+![Preview](docs/screenshots/Preview.png?raw=true "Preview")
+
+## License
+[MIT](LICENSE.txt)
