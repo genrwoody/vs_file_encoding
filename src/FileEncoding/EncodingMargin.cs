@@ -55,8 +55,7 @@ namespace FileEncoding
                 var margin = parameter as EncodingMargin;
                 if (margin == null) return;
 
-                if (margin.document.Encoding.CodePage != encoding.CodePage
-                    || margin.document.Encoding.HasBom() != encoding.HasBom())
+                if (margin.document.Encoding.DisplayName() != encoding.DisplayName())
                 {
                     var isDirty = margin.document.IsDirty;
 
@@ -64,7 +63,7 @@ namespace FileEncoding
                     margin.document.UpdateDirtyState(true, DateTime.UtcNow);
                     if (!isDirty)
                     {
-                        margin.document.SaveAs(margin.document.FilePath, true);
+                        margin.document.Save();
                         margin.document.UpdateDirtyState(false, DateTime.UtcNow);
                     }
 

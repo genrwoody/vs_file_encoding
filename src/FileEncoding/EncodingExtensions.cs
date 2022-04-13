@@ -1,9 +1,18 @@
 ﻿using System.Text;
+using Microsoft.VisualStudio.Text;
 
 namespace FileEncoding
 {
     public static class EncodingExtensions
     {
+        public static Encoding Utf8FirstEncoding(this ITextDocument document)
+        {
+            if (document.Encoding == Encoding.Default)
+            {
+
+            }
+        }
+
         /// <summary>
         /// A BOM(byte-order mark) is used to indicate how a processor places 
         /// serialized text into a sequence of bytes.

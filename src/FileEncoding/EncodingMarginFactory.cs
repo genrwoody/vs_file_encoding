@@ -27,6 +27,7 @@ namespace FileEncoding
         /// </returns>
         public IWpfTextViewMargin CreateMargin(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin marginContainer)
         {
+
             //return new EncodingMargin(wpfTextViewHost.TextView);
             ITextViewRoleSet roles = wpfTextViewHost.TextView.Roles;
             if (roles.Contains("DOCUMENT")
