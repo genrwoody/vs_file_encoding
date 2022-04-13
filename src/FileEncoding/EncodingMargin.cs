@@ -93,14 +93,14 @@ namespace FileEncoding
 
             // Menu
             ContextMenu = new ContextMenu();
-            var contextMenuItems = new[] { Encoding.Default, new UTF8Encoding(false, true), new UTF8Encoding(true, true) };
-            foreach (var item in contextMenuItems)
+            var candidateEncodings = new[] { Encoding.Default, new UTF8Encoding(false, true), new UTF8Encoding(true, true) };
+            foreach (var encoding in candidateEncodings)
             {
-                var text = "Convert to " + item.DisplayName();
+                var text = "Convert to " + encoding.DisplayName();
                 _ = ContextMenu.Items.Add(new MenuItem
                 {
                     Header = text,
-                    Command = new ConvertCommand(item),
+                    Command = new ConvertCommand(encoding),
                     CommandParameter = this
                 });
             }
@@ -112,7 +112,7 @@ namespace FileEncoding
                 for (var i = 0; i < ContextMenu.Items.Count; ++i)
                 {
                     var item = ContextMenu.Items[i] as MenuItem;
-                    item.IsChecked = Content.Equals(contextMenuItems[i].ShortName());
+                    item.IsChecked = Content.Equals(candidateEncodings[i].ShortName());
                 }
                 ContextMenu.IsOpen = true;
             };
