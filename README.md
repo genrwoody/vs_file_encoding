@@ -22,3 +22,8 @@ NOTES:
 
 ## License
 [MIT](LICENSE.txt)
+
+```
+Copyright (c) 2021 genrwoody
+Copyright (c) 2022 Myvas Foundation
+```

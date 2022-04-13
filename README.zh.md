@@ -22,3 +22,10 @@
 
 ## License
 [MIT](LICENSE.txt)
+
+简而言之，您可以针对本程序做任何修改（包括且不限于命名、徽标、源代码），也可以自由分发或再发布。我们只希望您保留以下授权声明：
+```
+Copyright (c) 2021 genrwoody
+Copyright (c) 2022 Myvas Foundation
+```
+（您的声明可以附加在上述声明之后。）
