@@ -7,7 +7,7 @@ namespace FileEncoding
     {
         public static Encoding Utf8FirstEncoding(this ITextDocument document)
         {
-            if (document.Encoding == Encoding.Default)
+            if (document.Encoding.DisplayName() == Encoding.Default.DisplayName())
             {
 
             }
