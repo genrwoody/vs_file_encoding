@@ -4,7 +4,7 @@
         <Identity Id="FileEncoding.ff8fe5f7-e5dc-4213-a1d1-91ec8d84a049" Version="1.0.30" Language="en-US" Publisher="Woody; Myvas" />
         <DisplayName>FileEncoding</DisplayName>
         <Description xml:space="preserve">Display the charset of current document at the right bottom margin of the editor; Click to convert to your choice. UTF-8 as default.</Description>
-        <MoreInfo>https://github.com/Myvas/FileEncoding</MoreInfo>
+        <MoreInfo>https://github.com/genrwoody/vs_file_encoding</MoreInfo>
         <License>LICENSE.txt</License>
         <Icon>Icon.png</Icon>
         <PreviewImage>Preview.png</PreviewImage>
