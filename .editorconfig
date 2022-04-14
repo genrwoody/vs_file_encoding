@@ -2,7 +2,7 @@ root = true
 
 [*]
 end_of_line = crlf
-charset = utf-8-bom
+charset = utf-8
 indent_style = space
 indent_size = 4
 dotnet_style_operator_placement_when_wrapping = beginning_of_line

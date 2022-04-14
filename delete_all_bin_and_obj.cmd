@@ -1,4 +1,4 @@
-﻿@REM https://stackoverflow.com/questions/755382/i-want-to-delete-all-bin-and-obj-folders-to-force-all-projects-to-rebuild-everyt
+@REM https://stackoverflow.com/questions/755382/i-want-to-delete-all-bin-and-obj-folders-to-force-all-projects-to-rebuild-everyt
 @ECHO *************
 @ECHO ** WARNING!
 @ECHO ** This will delete all bin and obj folders!

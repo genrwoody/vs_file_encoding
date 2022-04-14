@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,43 +34,88 @@ namespace FileEncoding
 
         internal class ConvertCommand : ICommand
         {
-            private readonly Encoding encoding;
+            public Encoding SelectedEncoding { get; private set; }
             public ConvertCommand(Encoding encoding)
             {
-                this.encoding = encoding;
+                SelectedEncoding = encoding;
             }
 
-            event EventHandler ICommand.CanExecuteChanged
-            {
-                add { }
-                remove { }
-            }
+            event EventHandler ICommand.CanExecuteChanged { add { } remove { } }
 
-            public bool CanExecute(object parameter)
-            {
-                return true;
-            }
+            public bool CanExecute(object parameter) => true;
 
             public void Execute(object parameter)
             {
                 var margin = parameter as EncodingMargin;
                 if (margin == null) return;
 
-                if (margin.document.Encoding.DisplayName() != encoding.DisplayName())
+                if (margin.document.Encoding.DisplayName() != SelectedEncoding.DisplayName())
                 {
-                    var isDirty = margin.document.IsDirty;
+                    //var isDirtyBefore = margin.document.IsDirty;
 
-                    margin.document.Encoding = encoding;
+                    margin.document.Encoding = SelectedEncoding;
                     margin.document.UpdateDirtyState(true, DateTime.UtcNow);
-                    if (!isDirty)
-                    {
-                        margin.document.Save();
-                        margin.document.UpdateDirtyState(false, DateTime.UtcNow);
-                    }
+                    //if (!isDirtyBefore)
+                    //{
+                    //    margin.document.Save();
+                    //    //margin.document.UpdateDirtyState(false, DateTime.UtcNow);
+                    //}
 
                     margin.Content = margin.document.Encoding.ShortName();
                     margin.ToolTip = margin.document.Encoding.DisplayName();
+                    _lastSelectedEncoding = SelectedEncoding;
                 }
+            }
+        }
+
+        private static Encoding[] _candidateEncodings = new[] {
+                Encoding.Default,
+                UnicodeEncoding.UTF32,
+                UnicodeEncoding.BigEndianUnicode,
+                UnicodeEncoding.Unicode,
+                new UTF8Encoding(false, true),
+                new UTF8Encoding(true, true) };
+        private static Encoding _lastSelectedEncoding = new UTF8Encoding(false, true);
+        private void ReorderContextMenu()
+        {
+            // Items without First and Last.
+            var candidateEncodings = _candidateEncodings.ToList()
+                   .Except(new[] { Encoding.Default, _lastSelectedEncoding }).ToArray();
+
+            // Clear all items.
+            ContextMenu.Items.Clear();
+
+            // Add the first item.
+            //ContextMenu.Items.Add(new MenuItem
+            //{
+            //    Header = "Convert to " + Encoding.Default.DisplayName(),
+            //    Command = new ConvertCommand(Encoding.Default),
+            //    CommandParameter = this
+            //});
+            // Add the items amid.
+            for (var i = 0; i < candidateEncodings.Length; i++)
+            {
+                var encoding = candidateEncodings[i];
+                _ = ContextMenu.Items.Add(new MenuItem
+                {
+                    Header = "Convert to " + encoding.DisplayName(),
+                    Command = new ConvertCommand(encoding),
+                    CommandParameter = this
+                });
+            }
+            // Add the last item
+            ContextMenu.Items.Add(new MenuItem
+            {
+                Header = "Convert to " + _lastSelectedEncoding.DisplayName(),
+                Command = new ConvertCommand(_lastSelectedEncoding),
+                CommandParameter = this
+            });
+
+            //IsChecked
+            for (var i = 0; i < ContextMenu.Items.Count; i++)
+            {
+                var item = ContextMenu.Items[i] as MenuItem;
+                item.IsChecked = Content.Equals((item.Command as ConvertCommand)?.SelectedEncoding?.ShortName());
             }
         }
 
@@ -88,37 +134,28 @@ namespace FileEncoding
             {
                 textView.TextDataModel.DocumentBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document);
             }
+            document.DefaultAsUtf8Encoding();
             Content = document.Encoding.ShortName();
             ToolTip = document.Encoding.DisplayName();
 
-            // Menu
+            // ContextMenu
             ContextMenu = new ContextMenu();
-            var candidateEncodings = new[] { Encoding.Default, new UTF8Encoding(false, true), new UTF8Encoding(true, true) };
-            foreach (var encoding in candidateEncodings)
-            {
-                var text = "Convert to " + encoding.DisplayName();
-                _ = ContextMenu.Items.Add(new MenuItem
-                {
-                    Header = text,
-                    Command = new ConvertCommand(encoding),
-                    CommandParameter = this
-                });
-            }
+            ReorderContextMenu();
             ContextMenu.PlacementTarget = this;
             ContextMenu.Placement = PlacementMode.Top;
 
             Click += (sender, e) =>
             {
-                for (var i = 0; i < ContextMenu.Items.Count; ++i)
-                {
-                    var item = ContextMenu.Items[i] as MenuItem;
-                    item.IsChecked = Content.Equals(candidateEncodings[i].ShortName());
-                }
+                ReorderContextMenu();
                 ContextMenu.IsOpen = true;
             };
 
             document.FileActionOccurred += (sender, e) =>
             {
+                if (e.FileActionType == FileActionTypes.ContentLoadedFromDisk)
+                {
+                    //document.DefaultAsUtf8Encoding();
+                }
                 Content = document.Encoding.ShortName();
                 ToolTip = document.Encoding.DisplayName();
             };

@@ -1,16 +1,49 @@
-﻿using System.Text;
+using System;
+using System.Text;
 using Microsoft.VisualStudio.Text;
 
 namespace FileEncoding
 {
     public static class EncodingExtensions
     {
-        public static Encoding Utf8FirstEncoding(this ITextDocument document)
+        public static Encoding DefaultAsUtf8Encoding(this ITextDocument document)
         {
-            if (document.Encoding.DisplayName() == Encoding.Default.DisplayName())
+            // a little trick to fix the issue: When the encoding could be regarded as both utf8 and the default locale encoding (e.g. `GB2312`), but we would like to display it as `UTF-8` instead of the default.
+            // Workaround: Change the encoding from default to utf8, but remains !isDirty and keep the LastContentModifiedTime.
+            if (!document.IsDirty
+                && !document.Encoding.HasBom()
+                && document.Encoding.DisplayName() == Encoding.Default.DisplayName())
             {
-
+                if (document.IsUtf8Encoding())
+                {
+                    //var isDirtyBefore = document.IsDirty;
+                    //var lastContentModifiedTime = document.LastContentModifiedTime;
+                    try
+                    {
+                        document.Encoding = new UTF8Encoding(false, true); //UTF-8 (without BOM)
+                        // Keep it as not dirty to decrease unnecessary content modification
+                        //if (!isDirtyBefore)
+                        //{
+                        //    //document.UpdateDirtyState(true, lastContentModifiedTime);
+                        //    document.Save();
+                        //}
+                        //else
+                        //{
+                        //    document.UpdateDirtyState(false, lastContentModifiedTime);
+                        //}
+                    }
+                    catch
+                    {
+                    }
+                }
             }
+
+            return document.Encoding;
+        }
+
+        private static bool IsUtf8Encoding(this ITextDocument document)
+        {
+            return true;
         }
 
         /// <summary>
