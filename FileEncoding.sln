@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{9DA5C298-1CA0-4A
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		CHANGELOG.md = CHANGELOG.md
 		delete_all_bin_and_obj.cmd = delete_all_bin_and_obj.cmd
 		Directory.Build.props = Directory.Build.props
 		LICENSE.txt = LICENSE.txt
