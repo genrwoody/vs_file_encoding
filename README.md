@@ -3,7 +3,7 @@
 [中文](./README.zh.md) | English
 
 ## What's this?
-This Visual Studio Extensions (vsix) will display the charset of current document at the right bottom margin of the editor; Click to convert to your choice.
+This Visual Studio Extension will display the charset of current document at the right bottom margin of the editor; Click to popup a contextual menu with a list of encodings and choose the encoding that you want to convert the document to.
 It's a Visual Studio Extension, show text file encoding at editor right bottom corner, click button to convert encoding.
 
 **NOTES**:
