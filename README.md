@@ -15,7 +15,7 @@ It's a Visual Studio Extension, show text file encoding at editor right bottom c
 ![Preview](docs/screenshots/Preview.png?raw=true "Preview")
 
 NOTES:
-- **UTF-8** (without [BOM](http://en.wikipedia.org/wiki/Byte_order_mark))
+- **UTF-8** (without [BOM](https://docs.microsoft.com/en-us/globalization/encoding/byte-order-mark))
     - `html`|`xhtml`|`_Layout.cshtml`: It is not necessary to use a BOM if a output template has already pointed out its `charset=utf-8`.
     - `PHP`: In case of PHP files are usually as a template to output, it is not a good idea to save PHP files with the BOM at the beginning. Do not add BOM to a script file that cannot be correctly processed by its interpretor. 
     - `JSON`: Implementations must not add a **byte order mark** to the beginning of a JSON text. [[RFC 7159, Section 8.1]](https://www.rfc-editor.org/rfc/rfc7159#section-8.1) 
