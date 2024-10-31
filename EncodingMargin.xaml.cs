@@ -93,7 +93,7 @@ namespace FileEncoding
         {
             InitializeComponent();
             // display
-            ClipToBounds = true;
+            Focusable = false;
 
             // Text
             if (!textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document)) {
