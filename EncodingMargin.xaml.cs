@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text;
 using System.Windows.Input;
 using System.Text;
+using System.Diagnostics;
+using System.Threading;
 
 namespace FileEncoding
 {
@@ -28,6 +30,11 @@ namespace FileEncoding
         /// The document of textview.
         /// </summary>
         private readonly ITextDocument document = null;
+
+        /// <summary>
+        /// The document encoding name.
+        /// </summary>
+        private string documentEncodingName;
 
         private static bool HasBom(Encoding encoding)
         {
@@ -80,7 +87,7 @@ namespace FileEncoding
                     (HasBom(_this.document.Encoding) != HasBom(encoding))) {
                     _this.document.Encoding = encoding;
                     _this.document.UpdateDirtyState(true, DateTime.Now);
-                    _this.Content = GetDocumentEncoding(_this.document);
+                    _this.UpdateContent();
                 }
             }
         }
@@ -99,36 +106,66 @@ namespace FileEncoding
             if (!textView.TextBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document)) {
                 textView.TextDataModel.DocumentBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document);
             }
-            Content = GetDocumentEncoding(document);
+            UpdateContent();
             // Menu
-            ContextMenu = new ContextMenu();
-            (Encoding encoding, string name)[] encodings = {
-                ( Encoding.Unicode, "Unicode" ),
-                ( Encoding.BigEndianUnicode, "Unicode BE" ),
-                ( Encoding.UTF8, "UTF-8 (BOM)" ),
-                ( new UTF8Encoding(false), "UTF-8" ),
-                ( Encoding.Default, Encoding.Default.EncodingName )
+            Encoding[] encodings = {
+                Encoding.Unicode, Encoding.BigEndianUnicode,
+                Encoding.UTF8, new UTF8Encoding(false), Encoding.Default
             };
-            foreach ((Encoding encoding, string name) in encodings) {
-                string text = "Convert to " + name;
-                _ = ContextMenu.Items.Add(new MenuItem
-                {
-                    Header = text,
-                    Command = new ConvertCommand(encoding),
-                    CommandParameter = this
-                });
+            for (int i = 0; i < ContextMenu.Items.Count; ++i)
+            {
+                MenuItem item = ContextMenu.Items[i] as MenuItem;
+                item.Command = new ConvertCommand(encodings[i]);
+                item.CommandParameter = this;
+                if (i == 4) item.Header = "SYS - " + Encoding.Default.EncodingName;
             }
             ContextMenu.PlacementTarget = this;
-            ContextMenu.Placement = PlacementMode.Top;
-            Click += (sender, e) =>
-            {
-                for (int i = 0; i < ContextMenu.Items.Count; ++i) {
-                    MenuItem item = ContextMenu.Items[i] as MenuItem;
-                    item.IsChecked = Content.Equals(encodings[i].name);
-                }
-                ContextMenu.IsOpen = true;
+            ContextMenu.Placement = PlacementMode.Custom;
+            ContextMenu.CustomPopupPlacementCallback = CustomPopupPlacementCallback;
+            ContextMenu.Opened += ContextMenuOpened;
+            document.FileActionOccurred += (sender, e) => UpdateContent();
+        }
+
+        private void ContextMenuOpened(object sender, RoutedEventArgs e)
+        {
+            ContextMenu menu = (ContextMenu)e.Source;
+            MenuItem item = (MenuItem)menu.Items[0];
+            item.Focus();
+        }
+
+        private CustomPopupPlacement[] CustomPopupPlacementCallback(Size popupSize, Size targetSize, Point offset)
+        {
+            Debug.WriteLine("placement");
+            CustomPopupPlacement[] result = new CustomPopupPlacement[1];
+            result[0] = new CustomPopupPlacement{
+                Point = new Point(targetSize.Width - popupSize.Width, -popupSize.Height),
+                PrimaryAxis = PopupPrimaryAxis.Horizontal
             };
-            document.FileActionOccurred += (sender, e) => Content = GetDocumentEncoding(document);
+            return result;
+        }
+
+        private void OnButtonClicked(object sender, EventArgs e)
+        {
+            string[] names = { "Unicode", "Unicode BE", "UTF-8 (BOM)", "UTF-8", Encoding.Default.EncodingName };
+            for (int i = 0; i < ContextMenu.Items.Count; ++i)
+            {
+                MenuItem item = ContextMenu.Items[i] as MenuItem;
+                item.IsChecked = documentEncodingName.Equals(names[i]);
+            }
+            ContextMenu.IsOpen = true;
+        }
+
+        /// <summary>
+        /// Update content with document.
+        /// </summary>
+        private void UpdateContent()
+        {
+            documentEncodingName = GetDocumentEncoding(document);
+            if (documentEncodingName.Equals(Encoding.Default.EncodingName)) {
+                Content = "SYS";
+            } else {
+                Content = documentEncodingName;
+            }
         }
 
         #region AutoGenerate

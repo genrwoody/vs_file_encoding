@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="FileEncoding.8ba28da9-2d78-4af4-85a7-f29347189e7b" Version="1.0.4" Language="en-US" Publisher="Woody" />
+        <Identity Id="FileEncoding.8ba28da9-2d78-4af4-85a7-f29347189e7b" Version="1.0.5" Language="en-US" Publisher="Woody" />
         <DisplayName>FileEncoding</DisplayName>
         <Description xml:space="preserve">Show file encode at editer bottom, click button change encode.</Description>
         <MoreInfo>https://marketplace.visualstudio.com/items?itemName=genrwoody.FileEncodingVS2022</MoreInfo>
