@@ -2,6 +2,8 @@
 
 [中文](./README.md) | English
 
+Since VS2026 already has this feature built-in, this project will no longer be maintained.
+
 #### Introduction
 It's a Visual Studio Extension, show text file encoding at editor right bottom corner, click button to convert encoding.
 
